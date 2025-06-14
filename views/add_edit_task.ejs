@@ -1,0 +1,66 @@
+<%- include('partials/header') %>
+
+<main class="d-flex justify-content-center align-items-start py-5 bg-light">
+  <div class="col-11 col-md-10 col-lg-8">
+    <div class="card shadow-sm rounded-4 border-0">
+      <div class="card-body p-4">
+
+        <!-- Page Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-bold text-<%= edit ? 'warning' : 'success' %> mb-0">
+            <%= edit ? 'Edit Task' : 'Add New Task' %>
+          </h3>
+          <a href="/tasks" class="btn btn-outline-secondary btn-sm">← Back</a>
+        </div>
+
+        <!-- Task Form -->
+        <form method="POST" action="/tasks/<%= edit ? 'edit/' + task.id : 'add' %>">
+          
+          <!-- Task Details -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Task Details</label>
+            <textarea name="task_details" class="form-control" rows="3" required
+              placeholder="Describe your task..."><%= edit ? task.task_details : '' %></textarea>
+          </div>
+
+          <!-- Date -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Select Date</label>
+            <input type="date" name="date" class="form-control" required
+              value="<%= edit ? task.date : '' %>" />
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Status</label>
+            <select name="status" class="form-select" required>
+              <% const currentStatus = edit ? task.status : 'pending'; %>
+              <option value="pending" <%= currentStatus === 'pending' ? 'selected' : '' %>>Pending</option>
+              <option value="in-progress" <%= currentStatus === 'in-progress' ? 'selected' : '' %>>In Progress</option>
+              <option value="done" <%= currentStatus === 'done' ? 'selected' : '' %>>Done</option>
+            </select>
+          </div>
+
+          <!-- Priority -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Priority</label>
+            <select name="priority" class="form-select" required>
+              <% const currentPriority = edit ? task.priority : 3; %>
+              <option value="1" <%= currentPriority === 1 ? 'selected' : '' %>>High</option>
+              <option value="2" <%= currentPriority === 2 ? 'selected' : '' %>>Medium</option>
+              <option value="3" <%= currentPriority === 3 ? 'selected' : '' %>>Low</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-<%= edit ? 'warning' : 'success' %> w-100 fw-semibold">
+            <%= edit ? 'Update Task' : 'Add Task' %>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

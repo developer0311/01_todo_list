@@ -1,0 +1,153 @@
+<%- include('partials/header') %>
+
+  <main class="d-flex py-5">
+    <div class="row justify-content-center w-100">
+      <div class="col-lg-10 col-md-11">
+        <div class="card shadow-sm rounded-4 border-0">
+          <div class="card-body p-4">
+
+            <!-- Page Heading -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="fw-bold text-primary mb-0">Your Tasks</h3>
+              <a href="/tasks/add" class="btn btn-outline-success btn-sm">➕ Add New Task</a>
+            </div>
+
+            <!-- Filters -->
+            <form id="filterForm" class="row gy-3 gx-4 align-items-end mb-4">
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                  <option value="pending" selected>Pending</option>
+                  <option value="in-progress">In-Progress</option>
+                  <option value="done">Done</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Sort</label>
+                <select name="sort" class="form-select">
+                  <option value="oldest" selected>Oldest First</option>
+                  <option value="newest">Newest First</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Search by Date</label>
+                <input type="date" name="date" class="form-control" />
+              </div>
+
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100 fw-semibold">Apply Filters</button>
+              </div>
+            </form>
+
+            <!-- Task List -->
+            <div id="tasksContainer">
+              <% if (tasks && tasks.length> 0) { %>
+                <% tasks.forEach(task=> { %>
+                  <div class="card shadow-sm rounded-3 border mb-3 px-3 py-3 task-item">
+                    <div class="row align-items-center">
+
+                      <!-- Task Info -->
+                      <div class="col-md-8 col-12 mb-3 mb-md-0">
+                        <h6 class="fw-semibold mb-1 text-dark">
+                          <%= task.task_details %>
+                        </h6>
+                        <div class="small text-muted">
+                          📅 <span class="me-2">Date: <%= task.date.toISOString().slice(0, 10) %></span>
+                          🏷️ <span class="me-2">Status:
+                            <span
+                              class="badge text-capitalize bg-<%= task.status === 'done' ? 'success' : task.status === 'in-progress' ? 'warning' : 'secondary' %>">
+                              <%= task.status %>
+                            </span>
+                          </span>
+                          🚩 <span class="me-2">Priority:
+                            <span class="badge bg-light border text-dark fw-semibold">
+                              <%= ['High', 'Medium' , 'Low' ][task.priority - 1] %>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="col-md-4 col-12 text-md-end text-start">
+                        <a href="/tasks/edit/<%= task.id %>" class="btn btn-sm btn-outline-primary me-2 mb-md-0 mb-0">✏️
+                          Edit</a>
+                        <% if (task.status !=='done' ) { %>
+                          <form action="/tasks/complete/<%= task.id %>" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-success">✔️ Mark as done</button>
+                          </form>
+                          <% } %>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+                  <% }) %>
+                    <% } else { %>
+                      <div class="alert alert-info text-center">
+                        No tasks found matching your filter.
+                      </div>
+                      <% } %>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('filterForm');
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const params = new URLSearchParams(formData);
+      try {
+        const res = await fetch(`/tasks/json?${params.toString()}`);
+        const data = await res.json();
+        const container = document.getElementById('tasksContainer');
+
+        if (data.tasks.length > 0) {
+          const list = data.tasks.map(task => `
+          <div class="card shadow-sm rounded-3 border mb-3 px-3 py-3">
+            <div class="row align-items-center">
+              <div class="col-md-8 col-12 mb-3 mb-md-0">
+                <h6 class="fw-semibold mb-1 text-dark">${task.task_details}</h6>
+                <div class="small text-muted">
+                  📅 <span class="me-2">Date: ${task.date}</span>
+                  🏷️ <span class="me-2">Status:
+                    <span class="badge bg-${task.status === 'done' ? 'success' : task.status === 'in-progress' ? 'warning' : 'secondary'}">${task.status}</span>
+                  </span>
+                  🚩 <span class="me-2">Priority:
+                    <span class="badge bg-light border text-dark fw-semibold">
+                      ${['High', 'Medium', 'Low'][task.priority - 1]}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-4 col-12 text-md-end text-start">
+                <a href="/tasks/edit/${task.id}" class="btn btn-sm btn-outline-primary me-2 mb-md-0 mb-0">✏️ Edit</a>
+                ${task.status !== 'done' ? `
+                  <form action="/tasks/complete/${task.id}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-success">✔️ Mark as done</button>
+                  </form>
+                ` : ''}
+              </div>
+
+            </div>
+          </div>
+        `).join('');
+          container.innerHTML = list;
+        } else {
+          container.innerHTML = '<div class="alert alert-info text-center">No tasks found matching your filter.</div>';
+        }
+      } catch (err) {
+        console.error('Error fetching filtered tasks:', err);
+      }
+    });
+  </script>
+
+  <%- include('partials/footer') %>

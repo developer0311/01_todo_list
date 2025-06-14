@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<main class="bg-light">
+  <!-- Hero Section -->
+  <section class="py-5 text-center text-white" style="background: linear-gradient(135deg, #4f46e5, #3b82f6);">
+    <div class="container">
+      <h1 class="fw-bold">Welcome to Our Platform</h1>
+      <p class="">Join, learn, and stay updated with the latest features and content.</p>
+      <!-- <%// if (!req.session.subscribed && !req.session.admin) { %>
+        <a href="/auth/register" class="btn btn-light btn-lg mt-3">Get Started</a>
+      <% //} %> -->
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h3 class="fw-bold">Why Join Us?</h3>
+        <p class="text-muted">We offer everything you need to get started and grow.</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+              <i class="bi bi-shield-lock fs-1 text-primary"></i>
+              <h5 class="card-title mt-3">Secure Login</h5>
+              <p class="card-text">Your data is safe and encrypted with industry-standard security.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+              <i class="bi bi-speedometer2 fs-1 text-success"></i>
+              <h5 class="card-title mt-3">Fast & Reliable</h5>
+              <p class="card-text">Experience lightning-fast performance across all your devices.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+              <i class="bi bi-person-lines-fill fs-1 text-warning"></i>
+              <h5 class="card-title mt-3">Community Support</h5>
+              <p class="card-text">Get help and connect with like-minded users in our growing community.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-5 text-center" style="background-color: #f0f4ff;">
+    <div class="container">
+      <h3 class="fw-bold mb-3">Ready to get started?</h3>
+      <p class="mb-4">Create an account and unlock all the features.</p>
+      <a href="/register" class="btn btn-primary">Join Now</a>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
